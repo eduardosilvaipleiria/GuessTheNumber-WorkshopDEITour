@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="50dp"
+    android:orientation="vertical"
+    tools:context=".GamePlayActivity">
+
+    <EditText
+        android:id="@+id/editTextNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Introduza um número entre 1 e 9"
+        android:inputType="number"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/btnVerificar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClickBtnVerificar"
+        android:text="Verificar" />
+
+    <TextView
+        android:id="@+id/textViewResultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="150dp"
+        android:text="Introduz um número entre 1 e 9 e clica em VERIFICAR para analisar se acertaste no número magico do jogo"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textViewNumTentativas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="20dp"
+        android:text="Número de tentativas restantes: ilimitadas!"
+        android:textAlignment="center" />
+</LinearLayout>
