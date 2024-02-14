@@ -47,11 +47,7 @@ class GamePlayActivity : AppCompatActivity() {
         numTentativas++
 
         //Verificar se o utilizador clicou no botão sem introduzir um número ou se introduziu um número fora dos limites
-        if(numUser.isEmpty()) {
-            Toast.makeText(this, "Não foi introduzido um número!", Toast.LENGTH_LONG).show()
-            return
-        }
-        if(numUser.toInt() < MIN || numUser.toInt() > MAX) {
+        if(numUser.isEmpty() || numUser.toInt() < MIN || numUser.toInt() > MAX) {
             Toast.makeText(this, "Introduza um número entre 1 e 9", Toast.LENGTH_LONG).show()
             return
         }
