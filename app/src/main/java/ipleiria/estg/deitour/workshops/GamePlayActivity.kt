@@ -3,6 +3,7 @@ package ipleiria.estg.deitour.workshops
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
@@ -12,16 +13,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 
 class GamePlayActivity : AppCompatActivity() {
     var MIN = 1
     var MAX = 9
+    var TENTATIVAS_MAX = 5
     var numGerado = -1
     var numTentativas = 0
-    var editTextNumber: EditText ?= null
+    var editTextNumber: EditText?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +31,14 @@ class GamePlayActivity : AppCompatActivity() {
         //Obter o nome do utilizador preenchido na atividade anterior
         val playerName = intent.getStringExtra("playerName")
         editTextNumber = findViewById<EditText>(R.id.editTextNumber)
+        var textViewNumTentativas = findViewById<TextView>(R.id.textViewNumTentativas)
 
-        Snackbar.make(findViewById(android.R.id.content), "Bem-vindo e bom-jogo, " + playerName + "! Neste nível tens tentativas ilimitadas para descobrir o número mágico gerado pela aplicação", Snackbar.LENGTH_LONG).show()
+        textViewNumTentativas.setText("Número de tentativas restantes: " + (TENTATIVAS_MAX - numTentativas));
+        Snackbar.make(findViewById(android.R.id.content), "Bem-vindo e bom-jogo, " + playerName + "! Neste nível tens " + TENTATIVAS_MAX + " tentativas para descobrir o número mágico gerado pela aplicação", Snackbar.LENGTH_LONG).show()
 
         //Gerar o número aleatório dentro dos limites definidos
         numGerado = (MIN..MAX).random()
+
     }
 
     fun onClickBtnVerificar(view: View) {
@@ -48,7 +52,7 @@ class GamePlayActivity : AppCompatActivity() {
 
         //Verificar se o utilizador clicou no botão sem introduzir um número ou se introduziu um número fora dos limites
         if(numUser.isEmpty() || numUser.toInt() < MIN || numUser.toInt() > MAX) {
-            Toast.makeText(this, "Introduza um número entre 1 e 9", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, " Introduza um número entre 1 e 9", Toast.LENGTH_LONG).show()
             return
         }
 
@@ -58,34 +62,51 @@ class GamePlayActivity : AppCompatActivity() {
         //Obter o número introduzido pelo utilizador
         var numUserInt = numUser.toInt()
 
-        //Veriricar se o número está correto
-        if(numUserInt == numGerado) {
-            textViewResultado.setTextColor(Color.rgb(79,143,0))
-            textViewResultado.setText("PARABÉNS, conseguiste acertar no número mágico em " + numTentativas + " tentativas!")
 
-            textViewNumTentativas.setText("Para jogar novamente volta à janela anterior e inicia novo jogo")
-
-            editTextNumber?.isEnabled = false
-            findViewById<Button>(R.id.btnVerificar).isEnabled = false
+        //Verificar se atingiu o máximo de tentativas e terminar o jogo
+        if (numTentativas == TENTATIVAS_MAX) {
+            btnVerificar.setEnabled(false);
+            editTextNumber?.setEnabled(false);
+            textViewNumTentativas.setTextColor(Color.RED);
+            textViewNumTentativas.setText("Excedeu o número de tentativas");
         }
         else {
-            //Verificar se o número é superior
-            if(numUserInt > numGerado) {
-                countdownToast("Ops! O número mágico é mais baixo... Tenta novamente em ", 3000);
-            }
-            else {
-                countdownToast("Ups! O número mágico é mais alto... Tenta novamente em ", 3000);
-            }
+            //Atualizar o número de tentativas restantes
+            textViewNumTentativas.setTextColor(Color.BLACK);
+            textViewNumTentativas.setText("Número de tentativas restantes: " + (TENTATIVAS_MAX - numTentativas));
 
-            //Bloquear o editTextNumber por 3 segundos
-            btnVerificar.setEnabled(false)
-            editTextNumber?.isEnabled = false
-            val handler = Handler()
-            handler.postDelayed(Runnable {
-                editTextNumber?.setText("")
-                editTextNumber?.isEnabled = true
-                btnVerificar.setEnabled(true)
-            }, 3000)
+
+            //Veriricar se o número está correto
+            if (numUserInt == numGerado) {
+                textViewResultado.setTextColor(Color.rgb(79, 143, 0))
+                textViewResultado.setText("PARABÉNS, conseguiste acertar no número mágico em " + numTentativas + " tentativas!")
+
+                textViewNumTentativas.setText("Para jogar novamente volta à janela anterior e inicia novo jogo")
+
+                editTextNumber?.isEnabled = false
+                findViewById<Button>(R.id.btnVerificar).isEnabled = false
+            } else {
+                //Verificar se o número é superior
+                if (numUserInt > numGerado) {
+                    countdownToast(
+                        "Ops! O número mágico é mais baixo... Tenta novamente em ",
+                        3000
+                    );
+                } else {
+                    countdownToast("Ups! O número mágico é mais alto... Tenta novamente em ", 3000);
+                }
+
+                //Bloquear o editTextNumber por 3 segundos
+                btnVerificar.setEnabled(false)
+                editTextNumber?.isEnabled = false
+                //No import da class Handler, selecione: Handler (android:os)
+                val handler = Handler()
+                handler.postDelayed(Runnable {
+                    editTextNumber?.setText("")
+                    editTextNumber?.isEnabled = true
+                    btnVerificar.setEnabled(true)
+                }, 3000)
+            }
         }
     }
 
